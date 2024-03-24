@@ -1,17 +1,36 @@
-import '../../components/mainComponents/mainComponents.css'
+import "../../components/mainComponents/mainComponents.css";
 import bigT from "../../assets/T.png";
 import location from "../../assets/location.png";
 import view from "../../assets/eye.png";
 import download from "../../assets/download.png";
 import apply from "../../assets/apply.png";
 import more from "../../assets/more.png";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 const JobComponent = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsVisible(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const toggleDropdown = () => {
     setIsVisible(!isVisible);
+  };
+
+  const handleDropdownItemClick = () => {
+    setIsVisible(false);
   };
   return (
     <main className="main">
@@ -27,18 +46,18 @@ const JobComponent = () => {
             </p>
           </div>
         </div>
-        <div className="wrapper-more">
+        <div ref={dropdownRef} className="wrapper-more">
           <div onClick={toggleDropdown}>
             <img className="more" src={more} alt="" />
           </div>
           <div className={`dropdown ${isVisible ? "toggle" : ""}`}>
-            <p>
+            <p onClick={handleDropdownItemClick}>
               <img src={view} alt="" /> View
             </p>
-            <p>
+            <p onClick={handleDropdownItemClick}>
               <img src={download} alt="" /> Save
             </p>
-            <p>
+            <p onClick={handleDropdownItemClick}>
               <img src={apply} alt="" /> Apply
             </p>
           </div>
